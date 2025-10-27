@@ -1,0 +1,52 @@
+<?php
+
+namespace App\Services;
+
+use App\Exceptions\InsufficientFundsException;
+use App\Models\User;
+use App\Models\Vehicle;
+use App\Repositories\UserRepository;
+use App\Repositories\VehicleRepository;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+
+class VehiclePurchaseService
+{
+    public function __construct(
+        private readonly UserRepository $users,
+        private readonly VehicleRepository $vehicles,
+    ) {
+    }
+
+    /**
+     * Attempt to purchase a vehicle for a user.
+     *
+     * @throws InsufficientFundsException
+     */
+    public function purchase(User $user, int $vehicleId, string $role = 'owner'): User
+    {
+        return DB::transaction(function () use ($user, $vehicleId, $role) {
+            $lockedUser = $this->users->findForUpdate($user->id);
+            $lockedVehicle = $this->vehicles->findForPurchase($vehicleId);
+
+            if ($lockedUser->cash < $lockedVehicle->price) {
+                throw new InsufficientFundsException('User does not have enough cash to purchase this vehicle.');
+            }
+
+            $lockedUser->cash = $lockedUser->cash - $lockedVehicle->price;
+            $lockedUser->save();
+
+            $lockedVehicle->status = 'active';
+            $lockedVehicle->save();
+
+            $lockedUser->vehicles()->syncWithoutDetaching([
+                $lockedVehicle->id => [
+                    'role' => $role,
+                    'assigned_at' => Carbon::now(),
+                ],
+            ]);
+
+            return $this->users->findWithVehicles($lockedUser->id);
+        });
+    }
+}

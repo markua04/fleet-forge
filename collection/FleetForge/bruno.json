@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "name": "FleetForge",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "requests": [
+    {
+      "uid": "1af85693-f839-4c24-82c5-1d31cf617c34",
+      "name": "Get User",
+      "type": "http",
+      "path": [
+        "Get User.bru"
+      ]
+    },
+    {
+      "uid": "4b6e8c98-6bb6-4a8d-9a3c-8a18a6bd7f6c",
+      "name": "Purchase Vehicle",
+      "type": "http",
+      "path": [
+        "Purchase Vehicle.bru"
+      ]
+    }
+  ]
+}
