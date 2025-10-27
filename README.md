@@ -44,6 +44,27 @@ Because the image prebuilds Vite assets, no frontend watcher is required. Any ap
 docker compose up -d --build
 ```
 
+### Seed Data
+
+Run the migrations and seeders to load a starter user and a catalogue of trucks:
+
+```bash
+docker compose exec app php artisan migrate:fresh --seed
+```
+
+Seeders create:
+- `test@example.com` with `cash` balance `600000.00`
+- Ten truck records (Volvo, Scania, Kenworth, etc.) with realistic VIN/price data
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+| ------ | -------- | ----------- |
+| `GET`  | `/api/users/{user}` | Fetch a single user with balance and assigned vehicles |
+| `POST` | `/api/users/{user}/vehicles` | Purchase/assign a vehicle to the user; deducts cash if the user can afford it |
+
+The Bruno collection under `collection/FleetForge/` includes ready-made requests (`Get User.bru`, `Purchase Vehicle.bru`) pointing at `http://127.0.0.1:8000`.
+
 ### Useful Commands
 
 - Follow logs: `docker compose logs -f nginx` (web) or `docker compose logs -f app` (PHP)
@@ -62,6 +83,15 @@ docker compose up -d --build
 - Root password: `rootpass` (override via `MYSQL_ROOT_PASSWORD` in `.env`)
 
 These values come from `.env`; adjust them there to suit your environment.
+
+### Local Development (WSL2 / bare metal)
+
+If you prefer running without Docker:
+
+1. Install PHP 8.2+, Composer, Node 20, and MySQL inside WSL2.
+2. Configure `.env` to point at the local MySQL instance (`DB_HOST=127.0.0.1`) and ensure writable permissions on `storage` and `bootstrap/cache`.
+3. Run `composer install`, `npm install`, then `npm run dev -- --host localhost --port 5173` for Vite and `php artisan serve --host=0.0.0.0 --port=8000` for Laravel.
+4. For production-style assets, run `npm run build` and delete `public/hot` so the app serves from `public/build`.
 
 ## About Laravel
 
