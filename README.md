@@ -34,7 +34,6 @@ Laravel 12 application scaffolded for production-style deployments. The reposito
 4. Run database migrations (and optionally seeders) against the containerised MySQL instance:
    ```bash
    docker compose exec app php artisan migrate --force
-   # docker compose exec app php artisan db:seed --force
    ```
 5. Visit the application at [http://localhost:8080](http://localhost:8080).
 
@@ -44,27 +43,58 @@ Because the image prebuilds Vite assets, no frontend watcher is required. Any ap
 docker compose up -d --build
 ```
 
-### Seed Data
+### Seed Data & Demo Workflows
 
-Run the migrations and seeders to load a starter user and a catalogue of trucks:
+Seed the database for a complete demo setup:
 
 ```bash
 docker compose exec app php artisan migrate:fresh --seed
 ```
 
 Seeders create:
-- `test@example.com` with `cash` balance `600000.00`
-- Ten truck records (Volvo, Scania, Kenworth, etc.) with realistic VIN/price data
+- `test@example.com` with the password `password` and `cash` balance of `600000.00`
+- 100 truck records spanning the main brands (Volvo, Scania, MAN, Kenworth, etc.) with realistic VINs and prices capped at DKK 200,000 and marked as available for purchase
+
+### Authentication & UI Flows
+
+- **Login:** Visit `http://localhost:8080/login` and sign in with `test@example.com` / `password`. The page uses a Tailwind-based hero layout.
+- **Dashboard:** `/vehicles` displays the logged-in user’s cash balance, fleet value, and a table of owned vehicles (role, assignment time, VIN, price). Flash messages confirm purchase/top-up actions.
+- **Marketplace:** `/vehicles/marketplace` shows cards for every available truck with imagery, pricing, and a “Purchase” action that calls the API and updates the balance.
+
+### Console Utility
+
+Add funds to any user directly via Artisan for testing purposes:
+
+```bash
+docker compose exec app php artisan addCashForUser 1 15000
+```
+
+The command validates inputs, runs inside a transaction, and reports the new balance.
 
 ### API Endpoints
 
 | Method | Endpoint | Description |
 | ------ | -------- | ----------- |
-| `GET`  | `/api/users/{user}` | Fetch a single user with balance and assigned vehicles |
-| `POST` | `/api/users/{user}/vehicles` | Purchase/assign a vehicle to the user; deducts cash if the user can afford it |
+| `GET`  | `/api/vehicles` | Paginated list of vehicles still available for purchase |
+| `GET`  | `/api/users/{user}` | Fetch a single user with balance and owned vehicles |
+| `POST` | `/api/users/{user}/vehicles` | Purchase/assign a vehicle; deducts cash, marks vehicle sold, and syncs the pivot role |
 
-The Bruno collection under `collection/FleetForge/` includes ready-made requests (`Get User.bru`, `Purchase Vehicle.bru`) pointing at `http://127.0.0.1:8000`.
+The Bruno collection (`collection/FleetForge/`) ships with:
+- `List Vehicles.bru` – `GET /api/vehicles` (pagination params included)
+- `Get User.bru` – `GET /api/users/{id}`
+- `Purchase Vehicle.bru` – `POST /api/users/{id}/vehicles`
 
+Point the collection at `http://127.0.0.1:8000` (Laravel’s default). Update the `vehicle_id` payload as needed.
+
+### Testing
+
+Run the backend test suite (feature + command tests):
+
+```bash
+docker compose exec app php artisan test
+```
+
+Coverage includes vehicle purchase success/failure paths, vehicle listings, and the cash top-up command. All tests use the in-memory database via `RefreshDatabase`.
 ### Useful Commands
 
 - Follow logs: `docker compose logs -f nginx` (web) or `docker compose logs -f app` (PHP)

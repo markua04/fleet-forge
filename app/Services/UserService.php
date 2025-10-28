@@ -14,6 +14,9 @@ class UserService
     ) {
     }
 
+    /**
+     * Get a user's profile along with their vehicles.
+     */
     public function getUserProfile(int $userId): User
     {
         return $this->users->findWithVehicles($userId);
