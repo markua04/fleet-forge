@@ -59,6 +59,6 @@ class VehicleMarketplaceController extends Controller
 
         return redirect()
             ->route('vehicles.index')
-            ->with('status', __('Vehicle purchased successfully.'));
+            ->with('status', 'Vehicle purchased successfully.');
     }
 }

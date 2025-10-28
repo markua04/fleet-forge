@@ -29,7 +29,7 @@ class LoginController extends Controller
         if (! Auth::attempt($credentials, $remember)) {
             return back()
                 ->withErrors([
-                    'email' => __('These credentials do not match our records.'),
+                    'email' => 'These credentials do not match our records.',
                 ])
                 ->onlyInput('email');
         }
