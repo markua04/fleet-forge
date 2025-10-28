@@ -55,6 +55,10 @@ RUN rm -f bootstrap/cache/*.php public/hot
 
 RUN chown -R www-data:www-data storage bootstrap/cache
 
+COPY docker/app/entrypoint.sh /usr/local/bin/app-entrypoint.sh
+RUN chmod +x /usr/local/bin/app-entrypoint.sh
+
 EXPOSE 9000
 
+ENTRYPOINT ["/usr/local/bin/app-entrypoint.sh"]
 CMD ["php-fpm"]
