@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -32,6 +34,7 @@ class VehicleFactory extends Factory
             'license_plate' => strtoupper(fake()->bothify('TRK-####')),
             'type' => 'truck',
             'status' => fake()->randomElement(['active', 'maintenance', 'inactive']),
+            'sold_at' => null,
         ];
     }
 }

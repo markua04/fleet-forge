@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repositories;
 
 use App\Models\Vehicle;
@@ -15,8 +17,9 @@ class VehicleRepository
     public function findForPurchase(int $id): Vehicle
     {
         return Vehicle::query()
+            ->available()
+            ->whereKey($id)
             ->lockForUpdate()
-            ->where('id', $id)
             ->firstOrFail();
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,6 +24,7 @@ return new class extends Migration
             $table->string('license_plate')->nullable();
             $table->string('type')->nullable();
             $table->enum('status', ['active', 'inactive', 'maintenance'])->default('active');
+            $table->timestamp('sold_at')->nullable()->index();
             $table->timestamps();
             $table->softDeletes();
         });
