@@ -42,7 +42,7 @@ class VehiclePurchaseService
             }
 
             if ($lockedUser->cash < $lockedVehicle->price) {
-                throw new InsufficientFundsException('User does not have enough cash to purchase this vehicle.');
+                throw new InsufficientFundsException('You do not have enough cash to purchase this vehicle.');
             }
 
             $lockedUser->cash = $lockedUser->cash - $lockedVehicle->price;
