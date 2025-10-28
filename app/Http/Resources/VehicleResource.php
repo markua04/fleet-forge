@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
@@ -13,6 +15,8 @@ class VehicleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $pivot = $this->pivot;
+
         return [
             'id' => $this->id,
             'uuid' => $this->uuid,
@@ -22,8 +26,8 @@ class VehicleResource extends JsonResource
             'vin' => $this->vin,
             'price' => (float) $this->price,
             'status' => $this->status,
-            'assigned_role' => $this->pivot->role ?? null,
-            'assigned_at' => $this->pivot->assigned_at ?? null,
+            'assigned_role' => $pivot?->role,
+            'assigned_at' => $pivot?->assigned_at,
         ];
     }
 }

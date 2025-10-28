@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -28,10 +30,11 @@ class VehicleFactory extends Factory
             'model' => $model,
             'year' => fake()->numberBetween(2010, 2025),
             'vin' => strtoupper(fake()->bothify('1#########??????')), // approximate VIN pattern
-            'price' => fake()->randomFloat(2, 45000, 150000),
+            'price' => fake()->randomFloat(2, 45000, 200000),
             'license_plate' => strtoupper(fake()->bothify('TRK-####')),
             'type' => 'truck',
             'status' => fake()->randomElement(['active', 'maintenance', 'inactive']),
+            'sold_at' => null,
         ];
     }
 }

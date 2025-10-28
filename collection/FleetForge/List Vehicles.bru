@@ -1,0 +1,21 @@
+meta {
+  name: List Vehicles
+  type: http
+  seq: 3
+}
+
+get {
+  url: http://127.0.0.1:8000/api/vehicles?per_page=50&page=1
+  body: none
+  auth: inherit
+}
+
+params:query {
+  per_page: 50
+  page: 1
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

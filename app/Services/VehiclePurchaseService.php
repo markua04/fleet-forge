@@ -1,12 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Exceptions\InsufficientFundsException;
+use App\Exceptions\VehicleUnavailableException;
 use App\Models\User;
-use App\Models\Vehicle;
 use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -22,21 +25,31 @@ class VehiclePurchaseService
      * Attempt to purchase a vehicle for a user.
      *
      * @throws InsufficientFundsException
+     * @throws VehicleUnavailableException
      */
     public function purchase(User $user, int $vehicleId, string $role = 'owner'): User
     {
         return DB::transaction(function () use ($user, $vehicleId, $role) {
             $lockedUser = $this->users->findForUpdate($user->id);
-            $lockedVehicle = $this->vehicles->findForPurchase($vehicleId);
+            try {
+                $lockedVehicle = $this->vehicles->findForPurchase($vehicleId);
+            } catch (ModelNotFoundException $exception) {
+                throw new VehicleUnavailableException(
+                    'Vehicle is no longer available for purchase.',
+                    0,
+                    $exception
+                );
+            }
 
             if ($lockedUser->cash < $lockedVehicle->price) {
-                throw new InsufficientFundsException('User does not have enough cash to purchase this vehicle.');
+                throw new InsufficientFundsException('You do not have enough cash to purchase this vehicle.');
             }
 
             $lockedUser->cash = $lockedUser->cash - $lockedVehicle->price;
             $lockedUser->save();
 
             $lockedVehicle->status = 'active';
+            $lockedVehicle->sold_at = Carbon::now();
             $lockedVehicle->save();
 
             $lockedUser->vehicles()->syncWithoutDetaching([

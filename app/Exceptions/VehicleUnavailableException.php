@@ -6,6 +6,6 @@ namespace App\Exceptions;
 
 use Exception;
 
-class InsufficientFundsException extends Exception
+class VehicleUnavailableException extends Exception
 {
 }

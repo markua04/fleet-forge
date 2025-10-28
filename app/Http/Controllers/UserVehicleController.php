@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Exceptions\InsufficientFundsException;
+use App\Exceptions\VehicleUnavailableException;
 use App\Http\Requests\PurchaseVehicleRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -25,7 +28,7 @@ class UserVehicleController extends Controller
                 $request->integer('vehicle_id'),
                 $request->role()
             );
-        } catch (InsufficientFundsException $exception) {
+        } catch (VehicleUnavailableException|InsufficientFundsException $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),
             ], Response::HTTP_UNPROCESSABLE_ENTITY);

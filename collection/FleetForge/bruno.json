@@ -22,6 +22,14 @@
       "path": [
         "Purchase Vehicle.bru"
       ]
+    },
+    {
+      "uid": "6c5db3f4-86bd-4d3b-b7b4-63da4fbf6f36",
+      "name": "List Vehicles",
+      "type": "http",
+      "path": [
+        "List Vehicles.bru"
+      ]
     }
   ]
 }
