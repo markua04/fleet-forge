@@ -183,15 +183,6 @@
                                 Once you purchase a vehicle, it will appear here instantly with its role,
                                 assignment timestamp, and purchase price.
                             </p>
-                            <a
-                                href="{{ route('api.users.show', $user->id) }}"
-                                class="inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60"
-                            >
-                                View API Profile
-                                <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12l-7.5 7.5M21 12H3" />
-                                </svg>
-                            </a>
                         </div>
                     @endif
                 </div>
