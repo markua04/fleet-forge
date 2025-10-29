@@ -60,4 +60,34 @@ class VehiclePurchaseApiTest extends TestCase
         $this->assertNull($vehicle->fresh()->sold_at);
         $this->assertEquals(1000.00, (float) $user->fresh()->cash);
     }
+
+    public function test_vehicle_purchase_fails_when_vehicle_already_sold(): void
+    {
+        $user = User::factory()->create(['cash' => 100000]);
+        $vehicle = Vehicle::factory()->create([
+            'price' => 45000,
+            'sold_at' => now(),
+            'status' => 'active',
+        ]);
+
+        $response = $this->postJson(route('api.users.vehicles.store', ['user' => $user->id]), [
+            'vehicle_id' => $vehicle->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonFragment([
+                'message' => 'Vehicle is no longer available for purchase.',
+            ]);
+
+        $this->assertDatabaseMissing('user_vehicle', [
+            'user_id' => $user->id,
+            'vehicle_id' => $vehicle->id,
+        ]);
+
+        $vehicle->refresh();
+        $user->refresh();
+
+        $this->assertEquals(45000.00, (float) $vehicle->price);
+        $this->assertEquals(100000.00, (float) $user->cash);
+    }
 }

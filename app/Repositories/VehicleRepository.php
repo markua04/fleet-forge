@@ -10,9 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VehicleRepository
 {
-    /**
-     * Fetch a vehicle record for purchase with an update lock.
-     *
+    /**   
      * @throws ModelNotFoundException
      */
     public function findForPurchase(int $id): Vehicle

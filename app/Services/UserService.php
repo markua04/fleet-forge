@@ -15,7 +15,7 @@ class UserService
     }
 
     /**
-     * Get a user's profile along with their vehicles.
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function getUserProfile(int $userId): User
     {

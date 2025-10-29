@@ -27,15 +27,11 @@ Laravel 12 application scaffolded for production-style deployments. The reposito
    ```bash
    docker compose up -d --build
    ```
-3. Ensure the app key exists (skip if `APP_KEY` is already set in `.env`):
-   ```bash
-   docker compose exec app php artisan key:generate --force
-   ```
-4. Run database migrations (and optionally seeders) against the containerised MySQL instance:
+3. Run database migrations (and optionally seeders) against the containerised MySQL instance:
    ```bash
    docker compose exec app php artisan migrate --force
    ```
-5. Visit the application at [http://localhost:8080](http://localhost:8080).
+4. Visit the application at [http://localhost:8080](http://localhost:8080).
 
 Because the image prebuilds Vite assets, no frontend watcher is required. Any application code changes require rebuilding the image:
 
@@ -84,17 +80,24 @@ The Bruno collection (`collection/FleetForge/`) ships with:
 - `Get User.bru` – `GET /api/users/{id}`
 - `Purchase Vehicle.bru` – `POST /api/users/{id}/vehicles`
 
-Point the collection at `http://127.0.0.1:8000` (Laravel’s default). Update the `vehicle_id` payload as needed.
+Point the collection at
+- `http://localhost:8080` when using the Docker stack (nginx behind PHP-FPM)
+- `http://127.0.0.1:8000` if you run `php artisan serve` locally
+
+Update the `vehicle_id` payload as needed.
+
+> **Note:** Authentication/authorization has intentionally been left out of the scope for this project. The endpoints are left open to keep the focus on architecture, transactions, and data-flow patterns and to save time. Auth should definitely be added and some sort of Policy checking for production readiness.
 
 ### Testing
 
-Run the backend test suite (feature + command tests):
+This is how you run tests when using the production-oriented Docker setup (which omits dev dependencies):
 
 ```bash
-docker compose exec app php artisan test
+composer install     # ensure dev dependencies like PHPUnit are available
+php artisan test
 ```
 
-Coverage includes vehicle purchase success/failure paths, vehicle listings, and the cash top-up command. All tests use the in-memory database via `RefreshDatabase`.
+Run these commands on your host machine (or inside a container that was built with `composer install` instead of `composer install --no-dev`). Coverage includes vehicle purchase success/failure paths, vehicle listings, and the cash top-up command. All tests use the in-memory database via `RefreshDatabase`.
 ### Useful Commands
 
 - Follow logs: `docker compose logs -f nginx` (web) or `docker compose logs -f app` (PHP)

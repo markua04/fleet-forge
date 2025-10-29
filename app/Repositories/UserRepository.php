@@ -40,8 +40,6 @@ class UserRepository
     }
 
     /**
-     * Retrieve a user row for balance updates with a lock.
-     *
      * @throws ModelNotFoundException
      */
     public function findForUpdate(int $id): User

@@ -16,6 +16,9 @@ class UserController extends Controller
     ) {
     }
 
+    /**
+     * @return JsonResponse<UserResource>
+     */
     public function show(User $user): JsonResponse
     {
         $user = $this->users->getUserProfile($user->id);
