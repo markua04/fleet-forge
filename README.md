@@ -48,7 +48,7 @@ docker compose exec app php artisan migrate:fresh --seed
 ```
 
 Seeders create:
-- `test@example.com` with the password `password` and `cash` balance of `600000.00`
+- `test@example.com` with the password `password` and `cash` balance of `1000000.00`
 - 100 truck records spanning the main brands (Volvo, Scania, MAN, Kenworth, etc.) with realistic VINs and prices capped at DKK 200,000 and marked as available for purchase
 
 ### Authentication & UI Flows
