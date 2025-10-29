@@ -13,9 +13,11 @@ Route::middleware('guest')->group(function (): void {
 });
 
 Route::middleware('auth')->group(function (): void {
-    Route::get('/vehicles', VehicleDashboardController::class)->name('vehicles.index');
-    Route::get('/vehicles/marketplace', [VehicleMarketplaceController::class, 'index'])->name('vehicles.marketplace');
-    Route::post('/vehicles/marketplace', [VehicleMarketplaceController::class, 'store'])->name('vehicles.marketplace.store');
+    Route::middleware('ensure-authenticated-user')->group(function (): void {
+        Route::get('/vehicles', VehicleDashboardController::class)->name('vehicles.index');
+        Route::get('/vehicles/marketplace', [VehicleMarketplaceController::class, 'index'])->name('vehicles.marketplace');
+        Route::post('/vehicles/marketplace', [VehicleMarketplaceController::class, 'store'])->name('vehicles.marketplace.store');
+    });
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 });
 

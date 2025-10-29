@@ -22,8 +22,6 @@ class VehicleDashboardController extends Controller
     {
         $userId = Auth::id();
 
-        abort_unless(is_int($userId), 403);
-
         $user = $this->users->getUserProfile($userId);
 
         return view('vehicles.index', [

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InsufficientFundsException;
-use App\Exceptions\VehicleUnavailableException;
 use App\Http\Requests\PurchaseVehicleRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -21,22 +19,15 @@ class UserVehicleController extends Controller
     }
 
     /**
-     * @throws VehicleUnavailableException
-     * @throws InsufficientFundsException
+     * @throws \DomainException
      */
     public function store(PurchaseVehicleRequest $request, User $user): JsonResponse
     {
-        try {
-            $updatedUser = $this->purchaseService->purchase(
-                $user,
-                $request->integer('vehicle_id'),
-                $request->role()
-            );
-        } catch (VehicleUnavailableException|InsufficientFundsException $exception) {
-            return response()->json([
-                'message' => $exception->getMessage(),
-            ], Response::HTTP_UNPROCESSABLE_ENTITY);
-        }
+        $updatedUser = $this->purchaseService->purchase(
+            $user,
+            $request->integer('vehicle_id'),
+            $request->role()
+        );
 
         return response()->json(
             new UserResource($updatedUser),
