@@ -27,15 +27,11 @@ Laravel 12 application scaffolded for production-style deployments. The reposito
    ```bash
    docker compose up -d --build
    ```
-3. Ensure the app key exists (skip if `APP_KEY` is already set in `.env`):
-   ```bash
-   docker compose exec app php artisan key:generate --force
-   ```
-4. Run database migrations (and optionally seeders) against the containerised MySQL instance:
+3. Run database migrations (and optionally seeders) against the containerised MySQL instance:
    ```bash
    docker compose exec app php artisan migrate --force
    ```
-5. Visit the application at [http://localhost:8080](http://localhost:8080).
+4. Visit the application at [http://localhost:8080](http://localhost:8080).
 
 Because the image prebuilds Vite assets, no frontend watcher is required. Any application code changes require rebuilding the image:
 
@@ -88,13 +84,14 @@ Point the collection at `http://127.0.0.1:8000` (Laravel’s default). Update th
 
 ### Testing
 
-Run the backend test suite (feature + command tests):
+This is how you run tests when using the production-oriented Docker setup (which omits dev dependencies):
 
 ```bash
-docker compose exec app php artisan test
+composer install     # ensure dev dependencies like PHPUnit are available
+php artisan test
 ```
 
-Coverage includes vehicle purchase success/failure paths, vehicle listings, and the cash top-up command. All tests use the in-memory database via `RefreshDatabase`.
+Run these commands on your host machine (or inside a container that was built with `composer install` instead of `composer install --no-dev`). Coverage includes vehicle purchase success/failure paths, vehicle listings, and the cash top-up command. All tests use the in-memory database via `RefreshDatabase`.
 ### Useful Commands
 
 - Follow logs: `docker compose logs -f nginx` (web) or `docker compose logs -f app` (PHP)
