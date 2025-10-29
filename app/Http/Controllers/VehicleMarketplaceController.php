@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\InsufficientFundsException;
-use App\Exceptions\VehicleUnavailableException;
 use App\Repositories\VehicleRepository;
 use App\Services\VehiclePurchaseService;
 use Illuminate\Contracts\View\View;
@@ -24,8 +22,6 @@ class VehicleMarketplaceController extends Controller
     {
         $user = $request->user();
 
-        abort_if($user === null, 403);
-
         $availableVehicles = $this->vehicles->paginateAvailable();
 
         return view('vehicles.purchase', [
@@ -42,14 +38,12 @@ class VehicleMarketplaceController extends Controller
 
         $user = $request->user();
 
-        abort_if($user === null, 403);
-
         try {
             $this->purchaseService->purchase(
                 $user,
                 (int) $data['vehicle_id']
             );
-        } catch (VehicleUnavailableException|InsufficientFundsException $exception) {
+        } catch (\DomainException $exception) {
             return back()
                 ->withInput()
                 ->withErrors([

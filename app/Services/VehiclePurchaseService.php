@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Services;
 
-use App\Exceptions\InsufficientFundsException;
-use App\Exceptions\VehicleUnavailableException;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Repositories\VehicleRepository;
@@ -24,8 +22,7 @@ class VehiclePurchaseService
     /**
      * Attempt to purchase a vehicle for a user.
      *
-     * @throws InsufficientFundsException
-     * @throws VehicleUnavailableException
+     * @throws \DomainException
      */
     public function purchase(User $user, int $vehicleId, string $role = 'owner'): User
     {
@@ -34,15 +31,11 @@ class VehiclePurchaseService
             try {
                 $lockedVehicle = $this->vehicles->findForPurchase($vehicleId);
             } catch (ModelNotFoundException $exception) {
-                throw new VehicleUnavailableException(
-                    'Vehicle is no longer available for purchase.',
-                    0,
-                    $exception
-                );
+                throw new \DomainException('Vehicle is no longer available for purchase.', 0, $exception);
             }
 
             if ($lockedUser->cash < $lockedVehicle->price) {
-                throw new InsufficientFundsException('You do not have enough cash to purchase this vehicle.');
+                throw new \DomainException('You do not have enough cash to purchase this vehicle.');
             }
 
             $lockedUser->cash = $lockedUser->cash - $lockedVehicle->price;

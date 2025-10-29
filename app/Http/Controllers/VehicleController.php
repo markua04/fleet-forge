@@ -22,10 +22,6 @@ class VehicleController extends Controller
     {
         $perPage = (int) $request->integer('per_page', 15);
 
-        if ($perPage <= 0) {
-            $perPage = 15;
-        }
-
         $availableVehicles = $this->vehicles->paginateAvailable($perPage);
 
         return VehicleResource::collection($availableVehicles);
