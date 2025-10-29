@@ -27,11 +27,16 @@ Laravel 12 application scaffolded for production-style deployments. The reposito
    ```bash
    docker compose up -d --build
    ```
-3. Run database migrations (and optionally seeders) against the containerised MySQL instance:
+3. Generate a Laravel app key and paste it into your host `.env` (the command prints the key but does not update the host file automatically):
+   ```bash
+   docker compose exec app php artisan key:generate --show
+   ```
+   Update the `APP_KEY=` line in `.env` with the value that command prints, then restart the stack (`docker compose up -d`).
+4. Run database migrations (and optionally seeders) against the containerised MySQL instance:
    ```bash
    docker compose exec app php artisan migrate --force
    ```
-4. Visit the application at [http://localhost:8080](http://localhost:8080).
+5. Visit the application at [http://localhost:8080](http://localhost:8080).
 
 Because the image prebuilds Vite assets, no frontend watcher is required. Any application code changes require rebuilding the image:
 
