@@ -15,6 +15,9 @@ class VehicleController extends Controller
     {
     }
 
+    /**
+     * @return AnonymousResourceCollection<VehicleResource>
+     */
     public function index(Request $request): AnonymousResourceCollection
     {
         $perPage = (int) $request->integer('per_page', 15);

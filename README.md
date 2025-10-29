@@ -80,7 +80,13 @@ The Bruno collection (`collection/FleetForge/`) ships with:
 - `Get User.bru` – `GET /api/users/{id}`
 - `Purchase Vehicle.bru` – `POST /api/users/{id}/vehicles`
 
-Point the collection at `http://127.0.0.1:8000` (Laravel’s default). Update the `vehicle_id` payload as needed.
+Point the collection at
+- `http://localhost:8080` when using the Docker stack (nginx behind PHP-FPM)
+- `http://127.0.0.1:8000` if you run `php artisan serve` locally
+
+Update the `vehicle_id` payload as needed.
+
+> **Note:** Authentication/authorization has intentionally been left out of the scope for this project. The endpoints are left open to keep the focus on architecture, transactions, and data-flow patterns and to save time. Auth should definitely be added and some sort of Policy checking for production readiness.
 
 ### Testing
 

@@ -15,6 +15,9 @@ class VehicleDashboardController extends Controller
     ) {
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function __invoke(): View
     {
         $userId = Auth::id();

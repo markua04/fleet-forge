@@ -20,6 +20,10 @@ class UserVehicleController extends Controller
     ) {
     }
 
+    /**
+     * @throws VehicleUnavailableException
+     * @throws InsufficientFundsException
+     */
     public function store(PurchaseVehicleRequest $request, User $user): JsonResponse
     {
         try {
