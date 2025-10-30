@@ -4,22 +4,31 @@ declare(strict_types=1);
 
 namespace App\Repositories;
 
+use App\Foundation\Http\ValidationException;
 use App\Models\Vehicle;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class VehicleRepository
 {
-    /**   
-     * @throws ModelNotFoundException
-     */
+    /** @throws ValidationException */
     public function findForPurchase(int $id): Vehicle
     {
-        return Vehicle::query()
+        $vehicle = Vehicle::query()
             ->available()
             ->whereKey($id)
             ->lockForUpdate()
-            ->firstOrFail();
+            ->first();
+
+        if ($vehicle === null) {
+            throw new ValidationException([
+                [
+                    'message' => 'Vehicle is no longer available for purchase.',
+                    'code' => 'vehicle_unavailable',
+                ],
+            ]);
+        }
+
+        return $vehicle;
     }
 
     public function paginateAvailable(int $perPage = 9): LengthAwarePaginator
