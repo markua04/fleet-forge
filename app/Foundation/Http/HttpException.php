@@ -7,9 +7,9 @@ use Illuminate\Http\Response;
 
 class HttpException extends Exception
 {
-    protected array $response;
+    protected array $response = [];
     protected int $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
-    protected ?array $context;
+    protected ?array $context = null;
 
     public function __construct(?array $errors = [])
     {

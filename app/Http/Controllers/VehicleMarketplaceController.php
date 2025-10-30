@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Foundation\Http\ValidationException;
 use App\Repositories\VehicleRepository;
 use App\Services\VehiclePurchaseService;
 use Illuminate\Contracts\View\View;
@@ -43,11 +44,13 @@ class VehicleMarketplaceController extends Controller
                 $user,
                 (int) $data['vehicle_id']
             );
-        } catch (\DomainException $exception) {
+        } catch (ValidationException $exception) {
+            $errors = $exception->errors();
+
             return back()
                 ->withInput()
                 ->withErrors([
-                    'vehicle_id' => $exception->getMessage(),
+                    'vehicle_id' => $errors[0]['message'] ?? 'Unable to purchase vehicle at this time.',
                 ]);
         }
 

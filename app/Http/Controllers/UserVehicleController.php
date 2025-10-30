@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Foundation\Http\ValidationException;
 use App\Http\Requests\PurchaseVehicleRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -18,9 +19,7 @@ class UserVehicleController extends Controller
     ) {
     }
 
-    /**
-     * @throws \DomainException
-     */
+    /** @throws ValidationException */
     public function store(PurchaseVehicleRequest $request, User $user): JsonResponse
     {
         $updatedUser = $this->purchaseService->purchase(
