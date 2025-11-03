@@ -40,4 +40,23 @@ class AddCashForUserCommandTest extends TestCase
             ->expectsOutput('User with ID 999 was not found.')
             ->assertExitCode(1);
     }
+
+    public function test_fails_in_production_environment(): void
+    {
+        $user = User::factory()->create();
+        $originalEnv = app()->environment();
+
+        try {
+            app()->instance('env', 'production');
+
+            $this->artisan('addCashForUser', [
+                'userId' => (string) $user->id,
+                'amount' => '100',
+            ])
+                ->expectsOutput('This command is disabled in production.')
+                ->assertExitCode(1);
+        } finally {
+            app()->instance('env', $originalEnv);
+        }
+    }
 }
