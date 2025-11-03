@@ -9,10 +9,12 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 
+
 class AddCashForUser extends Command
 {
     /**
-     * The name and signature of the console command.
+     * Not for use in production.
+     * Add more cash to a user balance.
      *
      * @var string
      */
@@ -32,6 +34,12 @@ class AddCashForUser extends Command
 
     public function handle(): int
     {
+        if (app()->environment('production')) {
+            $this->error('This command is disabled in production.');
+
+            return self::FAILURE;
+        }
+
         $userId = (int) $this->argument('userId');
         $amount = (float) $this->argument('amount');
 
